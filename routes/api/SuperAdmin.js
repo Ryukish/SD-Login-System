@@ -3,35 +3,42 @@ const bcrypt = require("bcryptjs");
 const express = require("express");
 const router = express.Router();
 const keys = require("../../config/Url&Keys");
-const validateRegisterInput = require("../../validateInfo/Register");
-const validateLoginInput = require("../../validateInfo/Login");
+const validateEmailRole = require("../../validateInfo/Assignrole");
 const User = require("../../models/User");
+const Role = require("../../models/Role")
 const rateLimit = require("express-rate-limit");
 
-router.post("/register", (req, res) => {
-    const { errors, isValid } = validateRegisterInput(req.body);
-    if (!isValid) {
+router.post("/assignrole", (req, res) => {
+  const { errors, isValid} = validateEmailRole(req.body);
+  if (!isValid){
       return res.status(400).json(errors);
+  }       
+  if()
+  User.findOne({ email: req.body.email}).then(returnedUser => {
+    if (!returnedUser) {
+        return res.status(404).json({EmailHasNotBeenRegistered: "Email has not been found"});
     }
-    User.findOne( { email:req.body.email }).then(returnedValues => {
-          if (returnedValues) {
-              return res.status(400).json({ email: "Account already exists"});
-          }
-    });
-    const newUser = new User({
-          name: req.body.name,
-          email: req.body.email,
-          password: req.body.password,
-          role: req.body.role
-    });
-    bcrypt.genSalt(10, (theError, salt) => {
-          bcrypt.hash(newUser.password, salt, (theError, hash) => {
-            if (theError) throw theError;
-            newUser.password = hash;
-            newUser.save().then(user => res.json(user)).catch(theError => console.log(theError));
-          });
-    });
-      
-  });
+    else {
+      returnedUser.role = req.body.role;
+      returnedUser.markModified('role');
+      returnedUser.save(err => console.log(err));
+    }
+  }
+});
+
+router.post("/addrole", (req, res) => {
+  //New Role name, and links 
+});
+router.post("/deleterole", (req, res) => {
+  //give role name delete role
+  //Change anyone with role to Basic
+});
+router.post("/modrole", (req, res) => {
+  //Change an existing role
+});
+router.post("/links", (req, res) => {
+  //given role
+  //
+});
 
 module.exports =router;
