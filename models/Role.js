@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const LinkSchema = new Schema({
+const RoleSchema = new Schema({
     role: { type: String, required: true},
-    links:  [strings]
+    links:  [String]
 });
 
-module.exports = Links = mongoose.model("links", LinkSchema)
+module.exports = Role = mongoose.model("roles", RoleSchema)

@@ -33,10 +33,6 @@ module.exports = function validateRegisterInput(data){
     if (!Validator.equals(data.password, data.password2)) {
         errors.password2 = "Both Passwords must match";
     }
-    if (data.role.toLowerCase() != "global" && data.role.toLowerCase() != "finance" && data.role.toLowerCase() != "sales" && data.role.toLowerCase() != "hr" && data.role.toLowerCase() !="engineering") {
-        errors.role = "Role is invalid : Global, Finance, Sales, HR or Engineering are valid"
-    }
-    
     return {
         errors,
         isValid: isEmpty(errors)

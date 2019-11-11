@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose')
 const lar = require("./routes/api/LoginAndRegister");
+const sa = require("./routes/api/SuperAdmin");
 const passport = require("passport");
 const rateLimit = require("express-rate-limit");
 require('dotenv').config();
@@ -26,6 +27,7 @@ const connection = mongoose.connection;
 app.use(passport.initialize());
 require("./config/passport")(passport);
 app.use("/api/lar", lar);
+app.use("/api/sa", sa);
 
 connection.once('open', () => {
     console.log("MongoDB database has established connection");

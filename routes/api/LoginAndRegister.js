@@ -6,7 +6,6 @@ const keys = require("../../config/Url&Keys");
 const validateRegisterInput = require("../../validateInfo/Register");
 const validateLoginInput = require("../../validateInfo/Login");
 const User = require("../../models/User");
-const rateLimit = require("express-rate-limit");
 
 router.post("/register", (req, res) => {
   const { errors, isValid } = validateRegisterInput(req.body);
@@ -22,7 +21,7 @@ router.post("/register", (req, res) => {
         name: req.body.name,
         email: req.body.email,
         password: req.body.password,
-        role: req.body.role
+        role: "basic"
   });
   bcrypt.genSalt(10, (theError, salt) => {
         bcrypt.hash(newUser.password, salt, (theError, hash) => {
@@ -75,4 +74,4 @@ router.post("/login", (req, res) => {
 });
 
 
-module.exports =router;Z
+module.exports =router;
