@@ -61,10 +61,32 @@ router.post("/deleterole", (req, res) => {
 
 
 router.post("/modrole", (req, res) => {
-  //Change an existing role
+  Role.findOne({ role: req.body.role.toLowerCase()}).then(returnedRole => {
+    if(!returnedRole){
+      return res.status(400).json({role:"Role is invalid"});
+    }
+    else {
+      returnedUser.role = req.body.role.toLowerCase();
+      returnedUser.markModified('role');
+      returnedUser.save(err => console.log(err));
+    }
+  });
 });
-router.post("/links", (req, res) => {
-  //given role
+
+
+
+router.post("/addlinks", (req, res) => {
+  //given role, add links 
+  //
+});
+
+router.post("/deletelinks", (req, res) => {
+  //given role, add links 
+  //
+});
+
+router.post("/modlinks", (req, res) => {
+  //given role, add links 
   //
 });
 
