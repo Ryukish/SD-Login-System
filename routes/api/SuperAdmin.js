@@ -4,15 +4,20 @@ const express = require("express");
 const router = express.Router();
 const keys = require("../../config/Url&Keys");
 const validateEmailRole = require("../../validateInfo/Assignrole");
-const validateRoleLinks = require("../../validateInfo/addrole");
+const validateRole = require("../../ValidateInfo/CheckRole");
 const User = require("../../models/User");
-const Role = require("../models/Role");
+const Role = require("../../models/Role");
 
 router.post("/assignrole", (req, res) => {
   const { errors, isValid} = validateEmailRole(req.body);
   if (!isValid){
       return res.status(400).json(errors);
-  }       
+  }
+  Role.findOne({ role: req.body.role.toLowerCase()}).then(returnedRole => {
+    if(!returnedRole){
+      return res.status(400).json({role:"Role is not created"});
+    }
+  });
   User.findOne({ email: req.body.email}).then(returnedUser => {
     if (!returnedUser) {
         return res.status(404).json({EmailHasNotBeenRegistered: "Email has not been found"});
@@ -26,13 +31,19 @@ router.post("/assignrole", (req, res) => {
 });
 
 router.post("/addrole", (req, res) => {
-  //New Role name, and links 
-  const { errors, isValid} = validateRoleLinks(req.body);
+  
+  const { errors, isValid} = validateRole(req.body);
   if (!isValid){
       return res.status(400).json(errors);
   }       
+
+  Role.findOne({ role: req.body.role.toLowerCase()}).then(returnedRole => {
+    if(returnedRole){
+      return res.status(400).json({role:"Role is already created"});
+    }
+  });
   const newRole = new Role({
-    role: req.body.role,
+    role: req.body.role.toLowerCase(),
     links: req.body.links
   });
   newRole.save().then(role => res.json(role)).catch(theError => console.log(theError));
@@ -40,8 +51,15 @@ router.post("/addrole", (req, res) => {
 
 router.post("/deleterole", (req, res) => {
   //give role name delete role
-  //Change anyone with role to Basic
+  const { errors, isValid} = validateRole(req.body);
+  if (!isValid){
+      return res.status(400).json(errors);
+  }       
+  Role.deleteOne({ role: req.body.role.toLowerCase() }).then(role => res.json(role)).catch(theError => console.log(theError));
+  User.updateMany({ role: req.body.role }, { role: "basic"}).then(role => res.json(role)).catch(theError => console.log(theError));
 });
+
+
 router.post("/modrole", (req, res) => {
   //Change an existing role
 });

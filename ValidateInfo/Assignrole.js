@@ -1,6 +1,5 @@
 const Validator = require("Validator");
 const isEmpty = require("is-empty");
-const Role = require("../models/Role");
 
 module.exports = function validateEmailRole(data){
     let errors = {};
@@ -17,11 +16,7 @@ module.exports = function validateEmailRole(data){
     if(Validator.isEmpty(data.role)) {
         errors.role = "Role field is required";
     }
-    Role.findOne({ role: data.role.toLowerCase()}).then(returnedRole => {
-        if(!returnedRole){
-            errors.role = "Role is invalid";
-        }
-    });
+
     return {
         errors,
         isValid: isEmpty(errors)
