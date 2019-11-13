@@ -5,6 +5,7 @@ const router = express.Router();
 const keys = require("../../config/Url&Keys");
 const validateEmailRole = require("../../validateInfo/Assignrole");
 const validateRole = require("../../ValidateInfo/CheckRole");
+const validate2Roles = require("../../ValidateInfo/Check2Roles");
 const User = require("../../models/User");
 const Role = require("../../models/Role");
 
@@ -61,32 +62,43 @@ router.post("/deleterole", (req, res) => {
 
 
 router.post("/modrole", (req, res) => {
+  const { errors, isValid} = validate2Roles(req.body);
+  if (!isValid){
+      return res.status(400).json(errors);
+  }     
+  Role.findOne({ role: req.body.rolechange.toLowerCase()}).then(returnedRoleChange => {
+    if(returnedRoleChange){
+      return res.status(400).json({rolechange:"Role name already Taken"});
+    }
   Role.findOne({ role: req.body.role.toLowerCase()}).then(returnedRole => {
     if(!returnedRole){
-      return res.status(400).json({role:"Role is invalid"});
+      return res.status(400).json({role:"Role not found"});
     }
-    else {
-      returnedUser.role = req.body.role.toLowerCase();
-      returnedUser.markModified('role');
-      returnedUser.save(err => console.log(err));
-    }
+    returnedRole.role = req.body.rolechange.toLowerCase();
+    returnedRole.markModified('role');
+    returnedRole.save().then(role => res.json(role)).catch(theError => console.log(theError));
+    });
   });
+  return req
 });
 
 
 
 router.post("/addlinks", (req, res) => {
-  //given role, add links 
-  //
+  const { errors, isValid} = validateRole(req.body);
+  if (!isValid){
+      return res.status(400).json(errors);
+  }     
+  Role.update({role : req.body.role}, {$addToSet: {links : req.body.links}});
 });
 
 router.post("/deletelinks", (req, res) => {
-  //given role, add links 
+  //given role, delete links 
   //
 });
 
 router.post("/modlinks", (req, res) => {
-  //given role, add links 
+  //given role and link, rename 
   //
 });
 

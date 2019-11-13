@@ -4,20 +4,16 @@ const mongoose = require('mongoose')
 const lar = require("./routes/api/LoginAndRegister");
 const sa = require("./routes/api/SuperAdmin");
 const passport = require("passport");
-const rateLimit = require("express-rate-limit");
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 5001;
 
-const limiter = rateLimit({
-    windowMs: 3 * 60 * 1000, 
-    max: 4
-  });
+
 
 app.use(cors());
 app.use(express.json());
-app.use(limiter);
+
 
 
 const uri = process.env.u;
