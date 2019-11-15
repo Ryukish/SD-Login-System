@@ -26,7 +26,7 @@ router.post("/assignrole", (req, res) => {
     else {
       returnedUser.role = req.body.role.toLowerCase();
       returnedUser.markModified('role');
-      returnedUser.save(err => console.log(err));
+      returnedUser.save().then(user => res.json(user)).catch(theError => console.log(theError));
     }
   });
 });
@@ -60,7 +60,6 @@ router.post("/deleterole", (req, res) => {
   User.updateMany({ role: req.body.role }, { role: "basic"}).then(role => res.json(role)).catch(theError => console.log(theError));
 });
 
-
 router.post("/modrole", (req, res) => {
   const { errors, isValid} = validate2Roles(req.body);
   if (!isValid){
@@ -82,24 +81,37 @@ router.post("/modrole", (req, res) => {
   return req
 });
 
-
+router.post("/linksofrole", (req, res) => {
+  const { errors, isValid} = validateRole(req.body);
+  if (!isValid){
+      return res.status(400).json(errors);
+  }     
+  Role.findOne({ role: req.body.role.toLowerCase()}).then(role => res.json(role)).catch(theError => console.log(theError));
+});
 
 router.post("/addlinks", (req, res) => {
   const { errors, isValid} = validateRole(req.body);
   if (!isValid){
       return res.status(400).json(errors);
   }     
-  Role.update({role : req.body.role}, {$addToSet: {links : req.body.links}});
+  Role.update({role : req.body.role.toLowerCase()}, {$addToSet: {links : req.body.links}}).then(role => res.json(role)).catch(theError => console.log(theError));
 });
 
 router.post("/deletelinks", (req, res) => {
-  //given role, delete links 
-  //
+  const { errors, isValid} = validateRole(req.body);
+  if (!isValid){
+      return res.status(400).json(errors);
+  }     
+  Role.update({role : req.body.role.toLowerCase()}, {$pullAll : {links : req.body.links}}).then(role => res.json(role)).catch(theError => console.log(theError));
 });
 
 router.post("/modlinks", (req, res) => {
-  //given role and link, rename 
-  //
+  const { errors, isValid} = validateRole(req.body);
+  if (!isValid){
+      return res.status(400).json(errors);
+  }     
+  Role.update({role : req.body.role.toLowerCase()}, {$pullAll : {links : req.body.links}});
+  Role.update({role : req.body.role.toLowerCase()}, {$push: {links : req.body.links}}).then(role => res.json(role)).catch(theError => console.log(theError));
 });
 
 module.exports =router;
