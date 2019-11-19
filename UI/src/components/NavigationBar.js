@@ -62,7 +62,7 @@ export class NavigationBar extends React.Component {
         const links = this.state.authenticated ? this.renderProtectedLinks() : this.renderPublicLinks();
         return (
         <Navbar expand= "lg">
-            <WithRouter to="/"><Navbar.Brand>COSC 4315 GROUP PROJECT</Navbar.Brand></WithRouter>
+            <WithRouter to="/"><Navbar.Brand>COSC 4351 GROUP PROJECT</Navbar.Brand></WithRouter>
             <Nav className="ml-auto">
                     <Nav.Item><WithRouter to="/" ><Nav.Link>Home</Nav.Link></WithRouter></Nav.Item>
                     {links}
