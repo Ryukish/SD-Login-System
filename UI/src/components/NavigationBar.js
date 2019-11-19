@@ -1,59 +1,73 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Nav, Navbar } from 'react-bootstrap';
-import styled from 'styled-components';
+import { LinkContainer as WithRouter } from "react-router-bootstrap";
+import "../css/NavigationBar.scss";
 
-const Styles = styled.div`
-  .navbar {
-    background-color: #222;
+import { IsAuthenticated, RegisterListener, UnregisterListener } from '../services/AuthenticationService.js';
+
+
+
+export class NavigationBar extends React.Component {
+    
+  constructor(props){
+      super(props);
+      this.state = { authenticated : IsAuthenticated() };
+      this.authStateChange = ()=> this.setState({authenticated : IsAuthenticated()});
   }
-  a, .navbar-brand, .navbar-nav .nav-link {
-    color: #bbb;
-    &:hover {
-      color: white;
+  
+  componentDidMount() {
+      RegisterListener(this.authStateChange);
+  }
+
+  componentWillUnmount() {
+      UnregisterListener(this.authStateChange);
+  }
+  
+  renderProtectedLinks = ()=>
+      (
+      <React.Fragment>
+
+          <Nav.Item>            
+              <WithRouter to="/global"><Nav.Link>Global</Nav.Link></WithRouter>      
+          </Nav.Item>
+          
+          <Nav.Item>            
+              <WithRouter to="/finance"><Nav.Link>Finance</Nav.Link></WithRouter>      
+          </Nav.Item>
+
+          <Nav.Item>            
+              <WithRouter to="/sales"><Nav.Link>Sales</Nav.Link></WithRouter>      
+          </Nav.Item>
+
+          <Nav.Item>            
+              <WithRouter to="/HR"><Nav.Link>Human Resources</Nav.Link></WithRouter>      
+          </Nav.Item>
+
+          <Nav.Item>            
+              <WithRouter to="/engineering"><Nav.Link>Engineering</Nav.Link></WithRouter>      
+          </Nav.Item>
+
+  </React.Fragment>
+        )
+    
+    renderPublicLinks = ()=>
+    (
+        <React.Fragment>
+            <Nav.Item><WithRouter to="/LogIn" ><Nav.Link>Log In</Nav.Link></WithRouter></Nav.Item>
+            <Nav.Item><WithRouter to="/Register"><Nav.Link>Register</Nav.Link></WithRouter></Nav.Item>
+        </React.Fragment>
+    )
+    
+    render() {
+        const links = this.state.authenticated ? this.renderProtectedLinks() : this.renderPublicLinks();
+        return (
+        <Navbar expand= "lg">
+            <WithRouter to="/"><Navbar.Brand>COSC 4315 GROUP PROJECT</Navbar.Brand></WithRouter>
+            <Nav className="ml-auto">
+                    <Nav.Item><WithRouter to="/" ><Nav.Link>Home</Nav.Link></WithRouter></Nav.Item>
+                    {links}
+                </Nav>
+        </Navbar> 
+        );
     }
-  }
-`;
-
-export const NavigationBar = () => (
-  <Styles>
-    <Navbar expand="lg">
-      <Navbar.Brand href="/">COSC 4351 PROJECT</Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="ml-auto">
-          <Nav.Item>
-            <Nav.Link>
-              <Link to="/">Home</Link>
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link>
-              <Link to="/global">Global</Link>
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link>
-              <Link to="/finance">Finance</Link>
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link>
-              <Link to="/sales">Sales</Link>
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link>
-              <Link to="/HR">Human Resources</Link>
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link>
-              <Link to="/engineering">Engineering</Link>
-            </Nav.Link>
-          </Nav.Item>
-        </Nav>
-      </Navbar.Collapse>
-    </Navbar>
-  </Styles >
-)
+}
