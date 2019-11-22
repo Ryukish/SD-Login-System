@@ -22,9 +22,9 @@ module.exports = {
   secretOrKey: "secret"
 };
 ```
-mongoDB: https://cloud.mongodb.com/user#/atlas/login
-login: jquintanilla713@gmail.com
-Password: houston23
+mongoDB: https://cloud.mongodb.com/user#/atlas/login  
+login: jquintanilla713@gmail.com  
+Password: houston23  
 
 ## Quick Start
 
