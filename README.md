@@ -58,5 +58,5 @@ Password: 123456
 engineering user : client5@email.com  
 Password: 123456
 
-unauhtorized user : coog@uh.edu
+unauhtorized user : coog@uh.edu  
 Password: 123456
