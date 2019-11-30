@@ -44,7 +44,9 @@ router.post("/login", (req, res) => {
   
   User.findOne({ email: req.body.email}).then(returnedValue => {
       if (!returnedValue) {
-          return res.status(404).json({EmailHasNotBeenRegistered: "Email has not been found"});
+          let errors = {};
+          errors.email = "Email has not been found";
+          return res.status(404).json(errors);
       }
       
   

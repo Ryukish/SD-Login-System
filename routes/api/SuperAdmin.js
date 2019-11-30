@@ -20,7 +20,7 @@ router.post("/assignrole", (req, res) => {
   });
   User.findOne({ email: req.body.email}).then(returnedUser => {
     if (!returnedUser) {
-        return res.status(404).json({EmailHasNotBeenRegistered: "Email has not been found"});
+        return res.status(404).json({email : "Email has not been found"});
     }
     else {
       returnedUser.role = req.body.role.toLowerCase();
