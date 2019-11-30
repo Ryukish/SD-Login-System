@@ -15,7 +15,7 @@ import Login from "./components/auth/Login";
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import Dashboard from "./components/dashboard/Dashboard";
 
-  
+
 import { Global } from './components/Global';
 import { Finance } from './components/Finance';
 import { Sales } from './components/Sales';
@@ -24,6 +24,7 @@ import { Engineering } from './components/Engineering';
 import { Layout } from './components/Layout';
 import { Jumbotron } from './components/Jumbotron';
 import { LogOff } from './components/LogOff';
+import Admin from './components/Admin';
 import { Container } from 'react-bootstrap';
 
 // Check for token to keep user logged in
@@ -35,7 +36,7 @@ if (localStorage.jwtToken) {
   const decoded = jwt_decode(token);
   // Set user and isAuthenticated
   store.dispatch(setCurrentUser(decoded));
-// Check for expired token
+  // Check for expired token
   const currentTime = Date.now() / 1000; // to get in milliseconds
   if (decoded.exp < currentTime) {
     // Logout user
@@ -43,40 +44,41 @@ if (localStorage.jwtToken) {
     // Redirect to login
     window.location.href = "./login";
   }
-} 
+}
 class App extends Component {
   render() {
     return (
       <Container>
-      <Provider store={store}>
-        <Router>
-          <div className="App">
-            <Navbar />
-            <Jumbotron />
-            <Layout>
-            <Switch>
-            <Route exact path="/" component={Landing} />
-            <Route exact path="/register" component={Register} />
-            <Route exact path="/login" component={Login} />
-            
-              <PrivateRoute exact path="/dashboard" component={Dashboard} />
-              
-              <PrivateRoute redirectTo="/LogIn" path="/global" component={Global} />
-              <PrivateRoute redirectTo="/LogIn" path="/finance" component={Finance} />
-              <PrivateRoute redirectTo="/LogIn" path="/sales" component={Sales} />
-              <PrivateRoute redirectTo="/LogIn" path="/HR" component={HR} />
-              <PrivateRoute redirectTo="/LogIn" path="/engineering" component={Engineering} />
-              <PrivateRoute redirectTo="/LogIn" path= "/LogOff" component={LogOff}/>
-              <Route>
-                <div><h2>404</h2></div>
-              </Route>
-            </Switch>
-            </Layout>
-          </div>
+        <Provider store={store}>
+          <Router>
+            <div className="App">
+              <Navbar />
+              <Jumbotron />
+              <Layout>
+                <Switch>
+                  <Route exact path="/" component={Landing} />
+                  <Route exact path="/register" component={Register} />
+                  <Route exact path="/login" component={Login} />
 
-          
-        </Router>
-      </Provider>
+                  <PrivateRoute exact path="/dashboard" component={Dashboard} />
+
+                  <PrivateRoute redirectTo="/LogIn" path="/global" component={Global} />
+                  <PrivateRoute redirectTo="/LogIn" path="/finance" component={Finance} />
+                  <PrivateRoute redirectTo="/LogIn" path="/sales" component={Sales} />
+                  <PrivateRoute redirectTo="/LogIn" path="/HR" component={HR} />
+                  <PrivateRoute redirectTo="/LogIn" path="/engineering" component={Engineering} />
+                  <PrivateRoute redirectTo="/LogIn" path="/admin" component={Admin} />
+                  <PrivateRoute redirectTo="/LogIn" path="/LogOff" component={LogOff} />
+                  <Route>
+                    <div><h2>404</h2></div>
+                  </Route>
+                </Switch>
+              </Layout>
+            </div>
+
+
+          </Router>
+        </Provider>
       </Container>
     );
   }
