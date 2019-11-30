@@ -39,4 +39,23 @@ npm run dev
 
 // Server runs on http://localhost:5000 and client on http://localhost:3000
 ```
+admin user : admin@admin.com  
+Password: 123456  
 
+global admin : client1@email.com  
+Password: 123456  
+
+finance user : client2@email.com  
+Password: 123456
+
+sales user : client3@email.com  
+Password: 123456
+
+HR user : client4@email.com  
+Password: 123456
+
+engineering user : client5@email.com  
+Password: 123456
+
+unauhtorized user : coog@uh.edu  
+Password: 123456
