@@ -95,8 +95,15 @@ router.post("/linksofrole", (req, res) => {
   const { errors, isValid} = validateRole(req.body);
   if (!isValid){
       return res.status(400).json(errors);
-  }     
-  Role.findOne({ role: req.body.role.toLowerCase()}).then(role => res.json(role)).catch(theError => console.log(theError));
+  }
+  Role.findOne({ role: req.body.role.toLowerCase()}).then(returnedRole => {
+    if(!returnedRole){
+      return res.status(400).json({role:"Role not found"});
+    }
+    else{
+      Role.findOne({ role: req.body.role.toLowerCase()}).then(role => res.json(role)).catch(theError => console.log(theError));
+    }
+  });
 });
 
 router.post("/addlinks", (req, res) => {
@@ -104,30 +111,53 @@ router.post("/addlinks", (req, res) => {
   if (!isValid){
       return res.status(400).json(errors);
   }     
-  Role.updateOne({role : req.body.role.toLowerCase()}, {$addToSet: {links : req.body.links}}).then(role => res.json(role)).catch(theError => console.log(theError));
+
+  Role.findOne({ role: req.body.role.toLowerCase()}).then(returnedRole => {
+    if(!returnedRole){
+      return res.status(400).json({role:"Role not found"});
+    }
+    else{
+      Role.updateOne({role : req.body.role.toLowerCase()}, {$addToSet: {links : req.body.links}}).then(role => res.json(role)).catch(theError => console.log(theError));       
+    }
+  });
 });
 
 router.post("/deletelinks", (req, res) => {
   const { errors, isValid} = validateRole(req.body);
   if (!isValid){
       return res.status(400).json(errors);
-  }     
-  Role.updateOne({role : req.body.role.toLowerCase()}, {$pullAll : {links : req.body.links}}).then(role => res.json(role)).catch(theError => console.log(theError));
+  }
+  Role.findOne({ role: req.body.role.toLowerCase()}).then(returnedRole => {
+    if(!returnedRole){
+      return res.status(400).json({role:"Role not found"});
+    }
+    else{     
+      Role.updateOne({role : req.body.role.toLowerCase()}, {$pullAll : {links : req.body.links}}).then(role => res.json(role)).catch(theError => console.log(theError));
+    }
+  });
 });
 
 router.post("/modlinks", (req, res) => {
   const { errors, isValid} = validateRole(req.body);
   if (!isValid){
       return res.status(400).json(errors);
-  } 
-  function one() {
-    Role.updateOne({role : req.body.role.toLowerCase()}, {$pullAll : {links : req.body.links}}).then(role => two())
+  }
+  Role.findOne({ role: req.body.role.toLowerCase()}).then(returnedRole => {
+    if(!returnedRole){
+      return res.status(400).json({role:"Role not found"});
+    }
+    else{ 
+      function one() {
+        Role.updateOne({role : req.body.role.toLowerCase()}, {$pullAll : {links : req.body.links}}).then(role => two())
 
-  }
-  function two(){
-    Role.updateOne({role : req.body.role.toLowerCase()}, {$addToSet: {links : req.body.linksnew}}).then(role => res.json(role)).catch(theError => console.log(theError));
-  }
-  one();
+      }
+      function two(){
+        Role.updateOne({role : req.body.role.toLowerCase()}, {links : req.body.linksnew}).then(role => res.json(role)).catch(theError => console.log(theError));
+      }
+      one();
+    }
+  });
+  return res;
 });
 
 module.exports =router;

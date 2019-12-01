@@ -63,9 +63,6 @@ class dellinks extends Component{
       render() {
         var { errors } = this.state;
         var { results }=this.state;
-        if(!isEmpty(results)){
-          errors = {};
-        };
         return [
     <body>
         <div class = "col s12">
@@ -89,9 +86,7 @@ class dellinks extends Component{
       </body>,
             <div style={{ marginTop: "10rem" }} className="row">
                 <div className = "col s7 offset-s4"><b>
-                        Create a new role with links or no links, put a ',' between each link.
-                        {results.role}
-                        {errors.role}
+                       Delete the links that a role has access too. Put a ',' between each link.
                     </b>
                 </div>
                 <div className="col s8 offset-s2">   
@@ -146,6 +141,13 @@ class dellinks extends Component{
                   </div>
                 </form>
               </div>
+              <div style={{ marginTop: "2rem" }} className="row">
+            <div className = "col s6 offset-s4"><b>
+                        {results.role}
+                        {errors.role}
+                </b>
+            </div>
+            </div>
             </div>
         ];
       }

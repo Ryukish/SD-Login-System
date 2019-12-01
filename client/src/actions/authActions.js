@@ -125,6 +125,10 @@ export const linksofrole = (role) => dispatch => {
   .post("api/sa/linksofrole", role)
   .then(res => {
     dispatch(returnSuccess(res.data));
+    dispatch({
+      type: GET_ERRORS,
+      payload: {}
+    })
 }).catch(err =>
     dispatch({
       type: GET_ERRORS,
@@ -156,9 +160,9 @@ export const deletelinks = (roleAndLinks) => dispatch => {
     })
   );
 };
-export const modlinks = (roleAndLinks) => dispatch => {
+export const modlinks = (roleLinksAndNewLinks) => dispatch => {
   axios
-  .post("api/sa/addlinks", roleAndLinks)
+  .post("api/sa/modlinks", roleLinksAndNewLinks)
   .then(res => {
     dispatch(returnSuccess(res.data));
 }).catch(err =>
@@ -169,7 +173,6 @@ export const modlinks = (roleAndLinks) => dispatch => {
   );
 };
 
-// Set logged in user
 export const setCurrentUser = decoded => {
   return {
     type: SET_CURRENT_USER,
@@ -184,14 +187,12 @@ export const returnSuccess = results => {
   }
 }
 
-// User loading
 export const setUserLoading = () => {
   return {
     type: USER_LOADING
   };
 };
 
-// Log user out
 export const logoutUser = () => dispatch => {
   // Remove token from local storage
   localStorage.removeItem("jwtToken");

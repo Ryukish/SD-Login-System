@@ -21,7 +21,7 @@ import addrole from "./components/SAactions/Addrole";
 import addlinks from "./components/SAactions/Addlinks";
 import delrole from "./components/SAactions/Delrole";
 import dellinks from "./components/SAactions/Dellinks";
-import modlinks from "./components/SAactions/Modlinks";
+import modlink from "./components/SAactions/Modlinks";
 import modrole from "./components/SAactions/Modrole";
 import linksofarole from "./components/SAactions/Linksofarole";
 
@@ -69,7 +69,7 @@ class App extends Component {
               <PrivateRouteSA exact path="/addrole" component={addrole} />
               <PrivateRouteSA exact path="/delrole" component={delrole} />
               <PrivateRouteSA exact path="/modrole" component={modrole} />
-              <PrivateRouteSA exact path="/modlinks" component={modlinks} />
+              <PrivateRouteSA exact path="/modlinks" component={modlink} />
               <PrivateRouteSA exact path="/addlinks" component={addlinks} />
               <PrivateRouteSA exact path="/dellinks" component={dellinks} />
               <PrivateRouteSA exact path="/linksofarole" component={linksofarole} />

@@ -41,7 +41,7 @@ return [
               
               <b>Hey there SuperAdmin,</b> {user.name}
               <p className="flow-text grey-text text-darken-1">
-                You are logged into admin portal Company XYZ
+                You are logged into admin portal for Company XYZ
                 {localStorage.getItem("links")}
               </p>
             </h4>
