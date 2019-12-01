@@ -11,18 +11,26 @@ class modrole extends Component{
         this.state = {
           role: "",
           rolechange: "",
-          message:"",
+          oldname:"",
+          results:{},
           errors: {}
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.errors) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
+      if (nextProps.results){
+        this.setState({
+          results : nextProps.results
+        });
+
+      }
+      if (nextProps.errors) {
             this.setState({
               errors: nextProps.errors
             });
-          }
-    }
+          
+      }
+    };
 
     onChange = e => {
         this.setState({ [e.target.id]: e.target.value });
@@ -35,12 +43,17 @@ class modrole extends Component{
           role: this.state.role,
           rolechange: this.state.rolechange
         };
-    
-        this.message =this.props.modrolea(roleAndRolechange);
+        this.setState({
+          errors: {},
+          results : {}
+        });
+        this.props.modrolea(roleAndRolechange);
     };
 
       render() {
-        const { errors } = this.state;
+        var { errors } = this.state;
+        var { results }= this.state;
+        
         return [
     <body>
         <div class = "col s12">
@@ -64,34 +77,17 @@ class modrole extends Component{
       </body>,
             <div style={{ marginTop: "10rem" }} className="row">
                 <div className = "col s6 offset-s3"><b>
-                    Provides the email of the user you want to update and the new role to assign
+                    Provide the role name you want to update and the new role name to assign
                     </b>
                 </div>
               <div className="col s8 offset-s2">   
                 <form noValidate onSubmit={this.onSubmit}>
 
-                  <div className="input-field col s6">
-                    <input
-                      onChange={this.onChange}
-                      value={this.state.email}
-                      error={errors.email}
-                      id="email"
-                      type="email"
-                      className={classnames("", {
-                        invalid: errors.email
-                      })}
-                    />
-                    <label htmlFor="email">Email</label>
-                    <span className="red-text">
-                      {errors.email}
-                    </span>
-                  </div>
-
-                  <div className="input-field col s6">
+                  <div className="input-field col s5">
                     <input
                       onChange={this.onChange}
                       value={this.state.role}
-                      error={errors.role}
+                      error={errors.email}
                       id="role"
                       type="text"
                       className={classnames("", {
@@ -101,6 +97,23 @@ class modrole extends Component{
                     <label htmlFor="role">Role</label>
                     <span className="red-text">
                       {errors.role}
+                    </span>
+                  </div>
+
+                  <div className="input-field col s5">
+                    <input
+                      onChange={this.onChange}
+                      value={this.state.rolechange}
+                      error={errors.rolechange}
+                      id="rolechange"
+                      type="text"
+                      className={classnames("", {
+                        invalid: errors.rolechange
+                      })}
+                    />
+                    <label htmlFor="rolechange">Role Change</label>
+                    <span className="red-text">
+                      {errors.rolechange}
                     </span>
                   </div>
 
@@ -120,19 +133,30 @@ class modrole extends Component{
                   </div>
                 </form>
               </div>
+            </div>,
+            <div style={{ marginTop: "2rem" }} className="row">
+            <div className = "col s6 offset-s4"><b>
+                The role's new name: {results.role}
+                </b>
             </div>
+          </div>
+          
+
         ];
       }
 
 }
 modrole.propTypes = {
     modrolea: PropTypes.object.isRequired,
-    auth: PropTypes.object.isRequired
+    auth: PropTypes.object.isRequired,
+    results: PropTypes.object.isRequired,
+    errors: PropTypes.object.isRequired
 };
 const mapStateToProps = state => ({
-    errors: state.errors,
-    auth: state.auth
-  });
+  errors: state.errors,
+  auth: state.auth,
+  results: state.results
+});
 
 export default connect(
     mapStateToProps,

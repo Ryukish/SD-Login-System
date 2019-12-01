@@ -20,7 +20,7 @@ router.post("/assignrole", (req, res) => {
   });
   User.findOne({ email: req.body.email}).then(returnedUser => {
     if (!returnedUser) {
-        return res.status(404).json({email : "Email has not been found"});
+        return res.status(404).json({email :"Email has not been found"});
     }
     else {
       returnedUser.role = req.body.role.toLowerCase();
@@ -41,12 +41,15 @@ router.post("/addrole", (req, res) => {
     if(returnedRole){
       return res.status(400).json({role:"Role is already created"});
     }
+    else {
+      const newRole = new Role({
+        role: req.body.role.toLowerCase(),
+        links: req.body.links
+      });
+      newRole.save().then(role => res.json(role)).catch(theError => console.log(theError));
+    }
   });
-  const newRole = new Role({
-    role: req.body.role.toLowerCase(),
-    links: req.body.links
-  });
-  newRole.save().then(role => res.json(role)).catch(theError => console.log(theError));
+  
 });
 
 router.post("/deleterole", (req, res) => {
@@ -54,7 +57,10 @@ router.post("/deleterole", (req, res) => {
   const { errors, isValid} = validateRole(req.body);
   if (!isValid){
       return res.status(400).json(errors);
-  }       
+  }
+  if (req.body.role.toLowerCase() === 'basic'){
+    return res.status(400).json({role:"You can't delete the Basic Role"})
+  }
   Role.deleteOne({ role: req.body.role.toLowerCase() }).then(role => res.json(role)).catch(theError => console.log(theError));
   User.updateMany({ role: req.body.role }, { role: "basic"}).then(role => res.json(role)).catch(theError => console.log(theError));
 });
@@ -72,12 +78,17 @@ router.post("/modrole", (req, res) => {
     if(!returnedRole){
       return res.status(400).json({role:"Role not found"});
     }
-    returnedRole.role = req.body.rolechange.toLowerCase();
-    returnedRole.markModified('role');
-    returnedRole.save().then(role => res.json(role)).catch(theError => console.log(theError));
+    else{
+      returnedRole.role = req.body.rolechange.toLowerCase();
+      returnedRole.markModified('role');
+      returnedRole.save().then(role => res.json(role)).catch(theError => console.log(theError));
+      }
     });
   });
-  return req
+  if(res.role === req.body.role){
+    return res.status(400).json({role:"Name change has failed", rolechange:"Name change has failed"});
+  }
+  return res
 });
 
 router.post("/linksofrole", (req, res) => {
@@ -93,7 +104,7 @@ router.post("/addlinks", (req, res) => {
   if (!isValid){
       return res.status(400).json(errors);
   }     
-  Role.updateone({role : req.body.role.toLowerCase()}, {$addToSet: {links : req.body.links}}).then(role => res.json(role)).catch(theError => console.log(theError));
+  Role.updateOne({role : req.body.role.toLowerCase()}, {$addToSet: {links : req.body.links}}).then(role => res.json(role)).catch(theError => console.log(theError));
 });
 
 router.post("/deletelinks", (req, res) => {
@@ -101,7 +112,7 @@ router.post("/deletelinks", (req, res) => {
   if (!isValid){
       return res.status(400).json(errors);
   }     
-  Role.updateone({role : req.body.role.toLowerCase()}, {$pullAll : {links : req.body.links}}).then(role => res.json(role)).catch(theError => console.log(theError));
+  Role.updateOne({role : req.body.role.toLowerCase()}, {$pullAll : {links : req.body.links}}).then(role => res.json(role)).catch(theError => console.log(theError));
 });
 
 router.post("/modlinks", (req, res) => {

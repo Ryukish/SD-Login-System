@@ -2,7 +2,7 @@ import axios from "axios";
 import setAuthToken from "../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
 
-import { GET_ERRORS, SET_CURRENT_USER, USER_LOADING } from "./types";
+import { GET_ERRORS, SET_CURRENT_USER, USER_LOADING, RETURN_SUCCESS } from "./types";
 
 // Register User
 export const registerUser = (userData, history) => dispatch => {
@@ -70,7 +70,7 @@ export const assignroleUser = (emailAndRole) => dispatch => {
   axios
   .post("api/sa/assignrole", emailAndRole)
   .then(res => {
-    return res.data;
+    dispatch(returnSuccess(res.data));
 }).catch(err =>
     dispatch({
       type: GET_ERRORS,
@@ -83,7 +83,7 @@ export const createrole = (roleAndLinks) => dispatch => {
   axios
   .post("api/sa/addrole", roleAndLinks)
   .then(res => {
-    return res.data;
+    dispatch(returnSuccess(res.data));
 }).catch(err =>
     dispatch({
       type: GET_ERRORS,
@@ -91,11 +91,12 @@ export const createrole = (roleAndLinks) => dispatch => {
     })
   );
 };
+
 export const deleterole = (role) => dispatch => {
   axios
   .post("api/sa/deleterole", role)
   .then(res => {
-    return res.data;
+    dispatch(returnSuccess(res.data));
 }).catch(err =>
     dispatch({
       type: GET_ERRORS,
@@ -107,7 +108,11 @@ export const modrolea= (roleAndRolechange) => dispatch => {
   axios
   .post("api/sa/modrole", roleAndRolechange)
   .then(res => {
-    return res.data;
+    dispatch(returnSuccess(res.data))
+    dispatch({
+      type: GET_ERRORS,
+      payload: {}
+    })
 }).catch(err =>
     dispatch({
       type: GET_ERRORS,
@@ -119,7 +124,7 @@ export const linksofrole = (role) => dispatch => {
   axios
   .post("api/sa/linksofrole", role)
   .then(res => {
-    return res.data;
+    dispatch(returnSuccess(res.data));
 }).catch(err =>
     dispatch({
       type: GET_ERRORS,
@@ -131,7 +136,7 @@ export const addlinks = (roleAndLinks) => dispatch => {
   axios
   .post("api/sa/addlinks", roleAndLinks)
   .then(res => {
-    return res.data;
+    dispatch(returnSuccess(res.data));
 }).catch(err =>
     dispatch({
       type: GET_ERRORS,
@@ -143,7 +148,7 @@ export const deletelinks = (roleAndLinks) => dispatch => {
   axios
   .post("api/sa/deletelinks", roleAndLinks)
   .then(res => {
-    return res.data;
+    dispatch(returnSuccess(res.data));
 }).catch(err =>
     dispatch({
       type: GET_ERRORS,
@@ -155,7 +160,7 @@ export const modlinks = (roleAndLinks) => dispatch => {
   axios
   .post("api/sa/addlinks", roleAndLinks)
   .then(res => {
-    return res.data;
+    dispatch(returnSuccess(res.data));
 }).catch(err =>
     dispatch({
       type: GET_ERRORS,
@@ -164,7 +169,6 @@ export const modlinks = (roleAndLinks) => dispatch => {
   );
 };
 
-
 // Set logged in user
 export const setCurrentUser = decoded => {
   return {
@@ -172,6 +176,13 @@ export const setCurrentUser = decoded => {
     payload: decoded
   };
 };
+
+export const returnSuccess = results => {
+  return {
+    type: RETURN_SUCCESS,
+    payload: results
+  }
+}
 
 // User loading
 export const setUserLoading = () => {

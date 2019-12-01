@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { assignroleUser } from "../../actions/authActions";
 import classnames from "classnames";
 import { Link } from "react-router-dom";
+const isEmpty = require("is-empty");
 
 class assignrole extends Component{
     constructor() {
@@ -11,17 +12,19 @@ class assignrole extends Component{
         this.state = {
           email: "",
           role: "",
-          message:"",
-          errors: {}
+          errors: {},
+          results: {}
         };
+    
     }
-
-    async componentDidMount() {
-        
-    }
-      
 
     componentWillReceiveProps(nextProps) {
+        if (nextProps.results){
+          this.setState({
+            results : nextProps.results
+          });
+          
+        }
         if (nextProps.errors) {
             this.setState({
               errors: nextProps.errors
@@ -40,13 +43,20 @@ class assignrole extends Component{
           email: this.state.email,
           role: this.state.role
         };
-    
-        var mes = this.props.assignroleUser(emailAndRole);
-        console.log(mes);
+        this.setState({
+          errors: {},
+          results : {}
+        });
+        this.props.assignroleUser(emailAndRole);
+
     };
 
       render() {
-        const { errors } = this.state;
+        var { errors } = this.state;
+        var { results }=this.state;
+        if(!isEmpty(results)){
+          errors = {};
+        };
         return [
     <body>
         <div class = "col s12">
@@ -70,7 +80,7 @@ class assignrole extends Component{
       </body>,
             <div style={{ marginTop: "10rem" }} className="row">
                 <div className = "col s6 offset-s3"><b>
-                    Provides the email of the user you want to update and the new role to assign
+                    Provides the email of the user you want to update and the new role to assign {results.name}
                     </b>
                 </div>
               <div className="col s8 offset-s2">   
@@ -133,11 +143,15 @@ class assignrole extends Component{
 }
 assignrole.propTypes = {
     assignroleUser: PropTypes.object.isRequired,
-    auth: PropTypes.object.isRequired
+    auth: PropTypes.object.isRequired,
+    results: PropTypes.object.isRequired,
+    errors: PropTypes.object.isRequired
 };
 const mapStateToProps = state => ({
     errors: state.errors,
-    auth: state.auth
+    auth: state.auth,
+    results: state.results
+    
   });
 
 export default connect(

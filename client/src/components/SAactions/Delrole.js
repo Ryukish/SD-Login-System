@@ -4,23 +4,31 @@ import { connect } from "react-redux";
 import { deleterole } from "../../actions/authActions";
 import classnames from "classnames";
 import { Link } from "react-router-dom";
+const isEmpty = require("is-empty");
 
 class delrole extends Component{
     constructor() {
         super();
         this.state = {
           role: "",
-          message:"",
+          results:{},
           errors: {}
         };
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.errors) {
+      if (nextProps.results){
+        this.setState({
+          results : nextProps.results
+        });
+
+      }
+      if (nextProps.errors) {
             this.setState({
               errors: nextProps.errors
             });
-          }
+          
+      }
     }
 
     onChange = e => {
@@ -33,11 +41,26 @@ class delrole extends Component{
         const role = {
           role: this.state.role
         };
+        this.setState({
+          errors: {},
+          results : {}
+        });
         this.props.deleterole(role);
     };
 
       render() {
-        const { errors } = this.state;
+        var { errors } = this.state;
+        var { results }=this.state;
+        var suc;
+        if(!isEmpty(results)){
+          errors = {};
+        }
+        if(results.n === 1){
+          suc = "Success";
+        }
+        else{
+          suc = "Role doesn't exist";
+        }
         return [
     <body>
         <div class = "col s12">
@@ -62,6 +85,7 @@ class delrole extends Component{
             <div style={{ marginTop: "10rem" }} className="row">
                 <div className = "col s6 offset-s3"><b>
                 If the role exists, it will be deleted and any User with the role will have their role changed to "Basic"
+                {suc}
                     </b>
                 </div>
               <div className="col s8 offset-s2">   
@@ -107,12 +131,16 @@ class delrole extends Component{
 }
 delrole.propTypes = {
     deleterole: PropTypes.object.isRequired,
-    auth: PropTypes.object.isRequired
+    auth: PropTypes.object.isRequired,
+    results: PropTypes.object.isRequired,
+    errors: PropTypes.object.isRequired
 };
 const mapStateToProps = state => ({
     errors: state.errors,
-    auth: state.auth
+    auth: state.auth,
+    results: state.results
   });
+
 
 export default connect(
     mapStateToProps,

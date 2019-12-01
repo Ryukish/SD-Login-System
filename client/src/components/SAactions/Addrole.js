@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { createrole } from "../../actions/authActions";
 import classnames from "classnames";
 import { Link } from "react-router-dom";
+const isEmpty = require("is-empty");
 
 class addrole extends Component{
     constructor() {
@@ -11,18 +12,25 @@ class addrole extends Component{
         this.state = {
           role: "",
           links:"",
-          message:"",
+          results:{},
           errors: {}
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.errors) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
+      if (nextProps.results){
+        this.setState({
+          results : nextProps.results
+        });
+
+      }
+      if (nextProps.errors) {
             this.setState({
               errors: nextProps.errors
             });
-          }
-    }
+          
+      }
+    };
 
     onChange = e => {
         this.setState({ [e.target.id]: e.target.value });
@@ -30,15 +38,34 @@ class addrole extends Component{
     
       onSubmit = e => {
         e.preventDefault();
-    
-        const roleAndLinks = {
-          role: this.state.role,
-          links: this.state.links
-        };
-        this.props.createrole(roleAndLinks);
+        var roleAndLinks ={};
+        if (isEmpty(this.state.links)){
+          roleAndLinks = {
+            role: this.state.role,
+            links: []
+          };
         }
+        else {
+           var li = this.state.links;
+           var fin = li.split(',');
+          roleAndLinks = {
+            role: this.state.role,
+            links: fin
+          };
+        }
+        this.setState({
+          errors: {},
+          results : {}
+        });
+        this.props.createrole(roleAndLinks);
+      };
+
       render() {
-        const { errors } = this.state;
+        var { errors } = this.state;
+        var { results }=this.state;
+        if(!isEmpty(results)){
+          errors = {};
+        };
         return [
     <body>
         <div class = "col s12">
@@ -63,7 +90,8 @@ class addrole extends Component{
             <div style={{ marginTop: "10rem" }} className="row">
                 <div className = "col s7 offset-s4"><b>
                         Create a new role with links or no links, put a ',' between each link.
-                        {this.state.message}
+                        {results.role}
+                        {errors.role}
                     </b>
                 </div>
                 <div className="col s8 offset-s2">   
@@ -125,11 +153,14 @@ class addrole extends Component{
 }
 addrole.propTypes = {
     createrole: PropTypes.object.isRequired,
-    auth: PropTypes.object.isRequired
+    auth: PropTypes.object.isRequired,
+    results: PropTypes.object.isRequired,
+    errors: PropTypes.object.isRequired
 };
 const mapStateToProps = state => ({
     errors: state.errors,
-    auth: state.auth
+    auth: state.auth,
+    results: state.results
   });
 
 export default connect(
