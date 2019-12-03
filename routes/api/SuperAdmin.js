@@ -117,9 +117,11 @@ router.post("/addlinks", (req, res) => {
       return res.status(400).json({role:"Role not found"});
     }
     else{
-      Role.updateOne({role : req.body.role.toLowerCase()}, {$addToSet: {links : req.body.links}}).then(role => res.json(role)).catch(theError => console.log(theError));       
+      
+      Role.updateOne({role : req.body.role.toLowerCase()}, {$addToSet: {links : req.body.links}}).catch(theError => console.log(theError));       
     }
-  });
+  }); 
+  Role.findOne({ role: req.body.role.toLowerCase()}).then(ret => res.json(ret));
 });
 
 router.post("/deletelinks", (req, res) => {
@@ -132,32 +134,68 @@ router.post("/deletelinks", (req, res) => {
       return res.status(400).json({role:"Role not found"});
     }
     else{     
-      Role.updateOne({role : req.body.role.toLowerCase()}, {$pullAll : {links : req.body.links}}).then(role => res.json(role)).catch(theError => console.log(theError));
+      Role.updateOne({role : req.body.role.toLowerCase()}, {$pullAll : {links : req.body.links}}).catch(theError => console.log(theError));
     }
   });
+  Role.findOne({ role: req.body.role.toLowerCase()}).then(ret => res.json(ret));
 });
 
-router.post("/modlinks", (req, res) => {
+router.post("/modlinks", async (req, res) => {
   const { errors, isValid} = validateRole(req.body);
   if (!isValid){
       return res.status(400).json(errors);
   }
-  Role.findOne({ role: req.body.role.toLowerCase()}).then(returnedRole => {
-    if(!returnedRole){
-      return res.status(400).json({role:"Role not found"});
+  returnedRole = await Role.findOne({ role: req.body.role.toLowerCase()})
+  if(!returnedRole){
+    return res.status(400).json({role:"Role not found"});
     }
-    else{ 
-      function one() {
-        Role.updateOne({role : req.body.role.toLowerCase()}, {$pullAll : {links : req.body.links}}).then(role => two())
+  else{ 
+    if(req.body.linksnew===[]){
+    }
+    else{
+      await Role.updateOne({role : req.body.role.toLowerCase()}, {$pullAll: {links : req.body.links}});
+    }
+    if(req.body.linksnew===[]){
+    }
+    else{
+      await Role.updateOne({role : req.body.role.toLowerCase()}, {$addToSet: {links : req.body.linksnew}}).catch(theError =>res.status(400).json({role:"You must provide links to rename"}));
+    }
+    var ai = await Role.findOne({ role: req.body.role.toLowerCase()});
+    return res.json({role : ai.role, links:ai.links});
+  }
+});
 
+
+router.post("/lou",async (req, res) => {
+  const { errors, isValid} = validateRole(req.body);
+  if (!isValid){
+      return res.status(400).json(errors);
+  }
+  var returnedRole;
+  returnedRole = await Role.findOne({ role: req.body.role.toLowerCase()})
+  if(!returnedRole){
+    return res.status(400).json({role:"Role not found"});
+  }
+  else{
+    var role;
+    role = await Role.findOne({ role: req.body.role.toLowerCase()})
+    var i;
+    var al=[];
+    var ai;
+    for(i = 0; i<role.links.length; i++){
+      if(role.links[i]){
+        if(role.links[i].includes("!")){
+          role.links[i]=role.links[i].replace("!","");
+          ai = await Role.findOne({ role: role.links[i]})
+          role.links[i] ="null";
+        }
       }
-      function two(){
-        Role.updateOne({role : req.body.role.toLowerCase()}, {links : req.body.linksnew}).then(role => res.json(role)).catch(theError => console.log(theError));
-      }
-      one();
     }
-  });
-  return res;
+    al=al.concat(ai.links);
+    al=al.concat(role.links);
+    return res.json(al);
+  }
+    
 });
 
 module.exports =router;

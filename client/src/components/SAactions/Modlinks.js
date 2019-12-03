@@ -5,7 +5,6 @@ import { modlinks } from "../../actions/authActions";
 import classnames from "classnames";
 import { Link } from "react-router-dom";
 
-
 class modlink extends Component{
     constructor() {
         super();
@@ -47,7 +46,7 @@ class modlink extends Component{
                 linksnew: [this.state.linksnew]
             }
         }
-        else {
+        else if (this.state.links.includes(",")) {
             var li = this.state.links;
             var fin = li.split(',');
             var li2 = this.state.linksnew;
@@ -56,8 +55,14 @@ class modlink extends Component{
             role: this.state.role,
             links: fin,
             linksnew: fin2
+            }
         }
-       };
+        else {
+            roleLinksAndNewLinks = {
+              role: this.state.role
+            }
+
+        }
         this.setState({
           errors: {},
           results : {}
@@ -67,21 +72,27 @@ class modlink extends Component{
 
       render() {
         var { errors } = this.state;
-        var { results }= this.state;
-        var suc = "";
-        if(results.nModified === 1){
-            suc = "Success";
-            errors = {};
+        var { results }=this.state;
+        var mes1="";
+        var mes2="";
+        var mes3="";
+        if(results.links){
+          console.log(results.links);
+          mes1 = "The role ";
+          mes2=" has these links ";
+          var i;
+          for(i = 0; i<results.links.length; i++){
+            mes3+= "["+results.links[i] + "] ";
           }
-        else if (results.nModified === 0 ) {
-            suc = "Failed";
-        }
+          mes3 = mes3.replace("[null]","");
+          mes3 = mes3.replace("[]","");
+          errors = {};
+        };
         return [
-    <body>
-        <div class = "col s12">
+        <div className = "col s12">
             <nav>
-            <div class="nav-wrapper blue">
-              <ul id="nav-mobile" class="left hide-on-med-and-down">  
+            <div className="nav-wrapper blue">
+              <ul id="nav-mobile" className="left hide-on-med-and-down">  
                 <li><Link to="/sadashboard"> <b>Home</b></Link></li>              
                 <li><Link to="/assignrole">Assign Role</Link></li>
                 <li><Link to="/addrole">Add Role</Link></li>
@@ -95,11 +106,10 @@ class modlink extends Component{
               </ul>
             </div>
             </nav>
-        </div>
-      </body>,
+        </div>,
             <div style={{ marginTop: "10rem" }} className="row">
-                <div className = "col s6 offset-s3"><b>
-                    Provide the role name and links you want to add
+                <div className = "col s8 offset-s2" style={{ paddingLeft: "35.250px" }}><b>
+                    Modify a links name: Give the role, the names of links you want to change and the new names for those links.
                     </b>
                 </div>
               <div className="col s8 offset-s2">   
@@ -172,9 +182,9 @@ class modlink extends Component{
                 </form>
               </div>
             </div>,
-            <div style={{ marginTop: "2rem" }} className="row">
-            <div className = "col s6 offset-s4"><b>
-                {suc}
+            <div style={{ marginTop: "5rem", paddingLeft: "60.250px"  }} className="row">
+            <div className = "col s8 offset-s2"><b>
+                {mes1} {results.role} {mes2} {mes3}  
                 </b>
             </div>
           </div>

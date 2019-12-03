@@ -49,8 +49,22 @@ class linksofarole extends Component{
     };
 
       render() {
+        var { results }=this.state;
         var { errors } = this.state;
-        var { results }= this.state;
+        var mes1="";
+        var mes2="";
+        var mes3="";
+        if(results.links){
+          console.log(results.links);
+          mes1 = "The role ";
+          mes2=" has these links ";
+          var i;
+          for(i = 0; i<results.links.length; i++){
+            mes3+= "["+results.links[i] + "] ";
+          }
+          mes3 = mes3.replace("[null]","");
+          mes3 = mes3.replace("[]","");
+        }
         return [
     <body>
         <div class = "col s12">
@@ -74,7 +88,7 @@ class linksofarole extends Component{
       </body>,
             <div style={{ marginTop: "10rem" }} className="row">
                 <div className = "col s6 offset-s3"><b>
-                    Provide the role name and links you want to add
+                  Links of a role: Give the role name
                     </b>
                 </div>
               <div className="col s8 offset-s2">   
@@ -114,8 +128,8 @@ class linksofarole extends Component{
               </div>
             </div>,
             <div style={{ marginTop: "2rem" }} className="row">
-            <div className = "col s6 offset-s4"><b>
-                {results.links}
+            <div className = "col s8 offset-s2" style={{ paddingLeft: "11.250px" }}><b>
+                {mes1}{results.role}{mes2}{mes3}
                 </b>
             </div>
           </div>

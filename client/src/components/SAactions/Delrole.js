@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { deleterole } from "../../actions/authActions";
 import classnames from "classnames";
 import { Link } from "react-router-dom";
-const isEmpty = require("is-empty");
 
 class delrole extends Component{
     constructor() {
@@ -51,15 +50,13 @@ class delrole extends Component{
       render() {
         var { errors } = this.state;
         var { results }=this.state;
-        var suc;
-        if(!isEmpty(results)){
+        var mes1="";
+        var mes2="";
+        
+        if(results.deletedCount === 1){
+          mes1 = "The role ";
+          mes2=" has been deleted";
           errors = {};
-        }
-        if(results.n === 1){
-          suc = "Success";
-        }
-        else{
-          suc = "Role doesn't exist";
         }
         return [
     <body>
@@ -83,9 +80,8 @@ class delrole extends Component{
         </div>
       </body>,
             <div style={{ marginTop: "10rem" }} className="row">
-                <div className = "col s6 offset-s3"><b>
-                If the role exists, it will be deleted and any User with the role will have their role changed to "Basic"
-                {suc}
+                <div className = "col 12 offset-s2"><b>
+                Delete a role: If the role exists, it will be deleted and any User with the role will have their role changed to "Basic"
                     </b>
                 </div>
               <div className="col s8 offset-s2">   
@@ -108,7 +104,7 @@ class delrole extends Component{
                     </span>
                   </div>
 
-                  <div className="col s6 offset-s5" style={{ paddingLeft: "11.250px" }}>
+                  <div className="col s6 offset-s4" style={{ paddingLeft: "40.250px" }}>
                     <button
                       style={{
                         width: "150px",
@@ -123,6 +119,12 @@ class delrole extends Component{
                     </button>
                   </div>
                 </form>
+              </div>,
+              <div style={{ marginTop: "15rem", paddingLeft: "45.250px"  }} className="row">
+                <div className = "col s12 offset-s2"><b>
+                    {mes1}{mes2}               
+                  </b>
+                </div>
               </div>
             </div>
         ];

@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { modrolea } from "../../actions/authActions";
 import classnames from "classnames";
 import { Link } from "react-router-dom";
+const isEmpty = require("is-empty");
 
 class modrole extends Component{
     constructor() {
@@ -53,7 +54,11 @@ class modrole extends Component{
       render() {
         var { errors } = this.state;
         var { results }= this.state;
-        
+        var {mes1} = "";
+        if (!isEmpty(results)){
+          mes1 = "The role's new name is ";
+          errors = {};
+        }
         return [
     <body>
         <div class = "col s12">
@@ -76,14 +81,14 @@ class modrole extends Component{
         </div>
       </body>,
             <div style={{ marginTop: "10rem" }} className="row">
-                <div className = "col s6 offset-s3"><b>
-                    Provide the role name you want to update and the new role name to assign
+                <div className = "col s7 offset-s3" ><b>
+                    Modify a Role: Give the role name you want to update and the new name to assign to that role
                     </b>
                 </div>
               <div className="col s8 offset-s2">   
                 <form noValidate onSubmit={this.onSubmit}>
 
-                  <div className="input-field col s5">
+                  <div className="input-field col s12">
                     <input
                       onChange={this.onChange}
                       value={this.state.role}
@@ -100,7 +105,7 @@ class modrole extends Component{
                     </span>
                   </div>
 
-                  <div className="input-field col s5">
+                  <div className="input-field col s12">
                     <input
                       onChange={this.onChange}
                       value={this.state.rolechange}
@@ -117,7 +122,7 @@ class modrole extends Component{
                     </span>
                   </div>
 
-                  <div className="col s6 offset-s5" style={{ paddingLeft: "11.250px" }}>
+                  <div className="col s6 offset-s4" style={{ paddingLeft: "40.250px" }}>
                     <button
                       style={{
                         width: "150px",
@@ -135,8 +140,8 @@ class modrole extends Component{
               </div>
             </div>,
             <div style={{ marginTop: "2rem" }} className="row">
-            <div className = "col s6 offset-s4"><b>
-                The role's new name: {results.role}
+            <div className = "col s6 offset-s4"  style={{ paddingLeft: "85.250px" }}><b>
+                {mes1} {results.role}
                 </b>
             </div>
           </div>

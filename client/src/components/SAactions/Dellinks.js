@@ -63,6 +63,20 @@ class dellinks extends Component{
       render() {
         var { errors } = this.state;
         var { results }=this.state;
+        var mes1="";
+        var mes2="";
+        var mes3="";
+        if(!isEmpty(results)){
+          mes1 = "The role ";
+          mes2=" has these links ";
+          var i;
+          for(i = 0; i<results.links.length; i++){
+            mes3+= "["+results.links[i] + "] ";
+          }
+          mes3 = mes3.replace("[null]","");
+          mes3 = mes3.replace("[]","");
+          errors = {};
+        };
         return [
     <body>
         <div class = "col s12">
@@ -85,8 +99,8 @@ class dellinks extends Component{
         </div>
       </body>,
             <div style={{ marginTop: "10rem" }} className="row">
-                <div className = "col s7 offset-s4"><b>
-                       Delete the links that a role has access too. Put a ',' between each link.
+                <div className = "col s10 offset-s3"><b>
+                       Delete link access for a role: Give the role you want to remove links access from
                     </b>
                 </div>
                 <div className="col s8 offset-s2">   
@@ -125,7 +139,7 @@ class dellinks extends Component{
                     </span>
                   </div>
 
-                  <div className="col s6 offset-s5" style={{ paddingLeft: "11.250px" }}>
+                  <div className="col s6 offset-s4" style={{ paddingLeft: "65.250px" }}>
                     <button
                       style={{
                         width: "150px",
@@ -141,10 +155,9 @@ class dellinks extends Component{
                   </div>
                 </form>
               </div>
-              <div style={{ marginTop: "2rem" }} className="row">
-            <div className = "col s6 offset-s4"><b>
-                        {results.role}
-                        {errors.role}
+              <div style={{ marginTop: "10rem", paddingLeft: "60.250px"  }} className="row">
+            <div className = "col s8 offset-s2"><b>
+                {mes1} {results.role} {mes2} {mes3}  
                 </b>
             </div>
             </div>

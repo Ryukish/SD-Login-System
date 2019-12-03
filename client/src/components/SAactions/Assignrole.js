@@ -54,7 +54,11 @@ class assignrole extends Component{
       render() {
         var { errors } = this.state;
         var { results }=this.state;
+        var mes1 ="";
+        var mes2="";
         if(!isEmpty(results)){
+          mes1 = "The User";
+          mes2=" has had their role changed to ";
           errors = {};
         };
         return [
@@ -79,8 +83,8 @@ class assignrole extends Component{
         </div>
       </body>,
             <div style={{ marginTop: "10rem" }} className="row">
-                <div className = "col s6 offset-s3"><b>
-                    Provides the email of the user you want to update and the new role to assign {results.name}
+                <div style={{paddingLeft: "100.250px"}} className = "col s7 offset-s2"><b>
+                    Assign a Role: Give email of the user you want to update and the new role to assign 
                     </b>
                 </div>
               <div className="col s8 offset-s2">   
@@ -120,7 +124,7 @@ class assignrole extends Component{
                     </span>
                   </div>
 
-                  <div className="col s6 offset-s5" style={{ paddingLeft: "11.250px" }}>
+                  <div className="col s6 offset-s4" style={{ paddingLeft: "50.250px" }}>
                     <button
                       style={{
                         width: "150px",
@@ -135,7 +139,15 @@ class assignrole extends Component{
                     </button>
                   </div>
                 </form>
+              </div>,
+              <div style={{ marginTop: "15rem", paddingLeft: "45.250px"  }} className="row">
+                <div className = "col s6 offset-s4"><b>
+                      {mes1} {results.name} {mes2} {results.role}
+                  
+                  </b>
+                </div>
               </div>
+            
             </div>
         ];
       }

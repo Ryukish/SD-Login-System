@@ -17,27 +17,16 @@ export const registerUser = (userData, history) => dispatch => {
     );
 };
 
-// Login - get user token
 export const loginUser = userData => dispatch => {
   axios
     .post("/api/lar/login", userData)
     .then(res => {
-      // Save to localStorage
-
-      // Set token to localStorage
       const { token } = res.data;
       const {role }= res.data;
       localStorage.setItem("jwtToken", token);
       localStorage.setItem("role", role);
-      axios.post("api/sa/linksofrole", {"role" : role}).then(resl => {
-        const { links } = resl.data;
-        localStorage.setItem("links", links)
-      });
-      // Set token to Auth header
       setAuthToken(token);
-      // Decode token to get user data
       const decoded = jwt_decode(token);
-      // Set current user
       dispatch(setCurrentUser(decoded));
     })
     .catch(err =>
@@ -50,13 +39,11 @@ export const loginUser = userData => dispatch => {
   
 };
 
-export const linksOfUser = () => dispatch => {
-  var r = localStorage.getItem("role");
+export const linksOfUser = (role) => dispatch => {
   axios
-  .post("api/sa/linksofrole", {"role" : r})
+  .post("api/sa/lou", role)
   .then(resl => {
-    const { links } = resl.data;
-    localStorage.setItem("links", links)
+   dispatch(returnSuccess(resl.data));
   }).catch(err =>
     dispatch({
       type: GET_ERRORS,

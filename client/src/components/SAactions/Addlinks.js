@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { addlinks } from "../../actions/authActions";
 import classnames from "classnames";
 import { Link } from "react-router-dom";
-
+const isEmpty = require("is-empty");
 
 class addlink extends Component{
     constructor() {
@@ -39,12 +39,19 @@ class addlink extends Component{
       onSubmit = e => {
         e.preventDefault();
         var roleAndLinks = {}
-        var li = this.state.links;
-        var fin = li.split(',');
-        roleAndLinks = {
-         role: this.state.role,
-         links: fin
-       };
+        if (!isEmpty(this.state.links)){
+          var li = this.state.links;
+          var fin = li.split(', ');
+          roleAndLinks = {
+          role: this.state.role,
+          links: fin
+          };
+       }
+       else{
+         roleAndLinks = {
+          role: this.state.role
+         }
+       }
         this.setState({
           errors: {},
           results : {}
@@ -55,10 +62,20 @@ class addlink extends Component{
       render() {
         var { errors } = this.state;
         var { results }= this.state;
-        var suc = "";
-        if(results.n === 1){
-            suc = "Success";
+        var mes1="";
+        var mes2="";
+        var mes3="";
+        if(!isEmpty(results)){
+          mes1 = "The role ";
+          mes2=" has these links ";
+          var i;
+          for(i = 0; i<results.links.length; i++){
+            mes3+= "["+results.links[i] + "] ";
           }
+          mes3 = mes3.replace("[null]","");
+          mes3 = mes3.replace("[]","");
+          errors = {};
+        };
         return [
     <body>
         <div class = "col s12">
@@ -81,14 +98,14 @@ class addlink extends Component{
         </div>
       </body>,
             <div style={{ marginTop: "10rem" }} className="row">
-                <div className = "col s6 offset-s3"><b>
-                    Provide the role name and links you want to add
+                <div className = "col s8 offset-s2" style={{ paddingLeft: "60.250px" }}><b>
+                    Add links access to a role: Give the role's name  you want to add links too and links you want to add
                     </b>
                 </div>
               <div className="col s8 offset-s2">   
                 <form noValidate onSubmit={this.onSubmit}>
 
-                  <div className="input-field col s5">
+                  <div className="input-field col s12">
                     <input
                       onChange={this.onChange}
                       value={this.state.role}
@@ -105,7 +122,7 @@ class addlink extends Component{
                     </span>
                   </div>
 
-                  <div className="input-field col s6">
+                  <div className="input-field col s12">
                     <input
                       onChange={this.onChange}
                       value={this.state.links}
@@ -122,7 +139,7 @@ class addlink extends Component{
                     </span>
                   </div>
 
-                  <div className="col s6 offset-s5" style={{ paddingLeft: "11.250px" }}>
+                  <div className="col s6 offset-s4" style={{ paddingLeft: "45.250px" }}>
                     <button
                       style={{
                         width: "150px",
@@ -139,9 +156,9 @@ class addlink extends Component{
                 </form>
               </div>
             </div>,
-            <div style={{ marginTop: "2rem" }} className="row">
-            <div className = "col s6 offset-s4"><b>
-                {suc}
+            <div style={{ marginTop: "5rem", paddingLeft: "60.250px"  }} className="row">
+            <div className = "col s8 offset-s2"><b>
+                {mes1} {results.role} {mes2} {mes3}  
                 </b>
             </div>
           </div>
