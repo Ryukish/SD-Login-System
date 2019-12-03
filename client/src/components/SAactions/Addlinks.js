@@ -39,7 +39,13 @@ class addlink extends Component{
       onSubmit = e => {
         e.preventDefault();
         var roleAndLinks = {}
-        if (!isEmpty(this.state.links)){
+        if(!this.state.links.includes(",")){
+          roleAndLinks = {
+            role: this.state.role,
+            links: [this.state.links]
+            };
+        }
+        else if (this.state.links.includes(",")){
           var li = this.state.links;
           var fin = li.split(', ');
           roleAndLinks = {

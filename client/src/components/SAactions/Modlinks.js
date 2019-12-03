@@ -77,7 +77,6 @@ class modlink extends Component{
         var mes2="";
         var mes3="";
         if(results.links){
-          console.log(results.links);
           mes1 = "The role ";
           mes2=" has these links ";
           var i;

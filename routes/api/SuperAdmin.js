@@ -69,10 +69,13 @@ router.post("/modrole", (req, res) => {
   const { errors, isValid} = validate2Roles(req.body);
   if (!isValid){
       return res.status(400).json(errors);
-  }     
+  }
+  if (req.body.role.toLowerCase() === 'superadmin'){
+    return res.status(400).json({role:"You can't rename the superadmin Role"})
+  }
   Role.findOne({ role: req.body.rolechange.toLowerCase()}).then(returnedRoleChange => {
     if(returnedRoleChange){
-      return res.status(400).json({rolechange:"Role name already Taken"});
+      return res.status(400).json({role:"Role name already Taken"});
     }
   Role.findOne({ role: req.body.role.toLowerCase()}).then(returnedRole => {
     if(!returnedRole){
@@ -86,7 +89,7 @@ router.post("/modrole", (req, res) => {
     });
   });
   if(res.role === req.body.role){
-    return res.status(400).json({role:"Name change has failed", rolechange:"Name change has failed"});
+    return res.status(400).json({role:"Name change has failed", role:"Name change has failed"});
   }
   return res
 });
@@ -106,38 +109,35 @@ router.post("/linksofrole", (req, res) => {
   });
 });
 
-router.post("/addlinks", (req, res) => {
+router.post("/addlinks", async (req, res) => {
   const { errors, isValid} = validateRole(req.body);
   if (!isValid){
       return res.status(400).json(errors);
   }     
 
-  Role.findOne({ role: req.body.role.toLowerCase()}).then(returnedRole => {
+  returnedRole = await Role.findOne({ role: req.body.role.toLowerCase()})
     if(!returnedRole){
       return res.status(400).json({role:"Role not found"});
     }
     else{
-      
-      Role.updateOne({role : req.body.role.toLowerCase()}, {$addToSet: {links : req.body.links}}).catch(theError => console.log(theError));       
-    }
-  }); 
-  Role.findOne({ role: req.body.role.toLowerCase()}).then(ret => res.json(ret));
+      await Role.updateOne({role : req.body.role.toLowerCase()}, {$addToSet: {links : req.body.links}}).catch(theError => console.log(theError));       
+    } 
+  await Role.findOne({ role: req.body.role.toLowerCase()}).then(ret => res.json(ret));
 });
 
-router.post("/deletelinks", (req, res) => {
+router.post("/deletelinks", async (req, res) => {
   const { errors, isValid} = validateRole(req.body);
   if (!isValid){
       return res.status(400).json(errors);
   }
-  Role.findOne({ role: req.body.role.toLowerCase()}).then(returnedRole => {
+  returnedRole = await Role.findOne({ role: req.body.role.toLowerCase()})
     if(!returnedRole){
       return res.status(400).json({role:"Role not found"});
     }
     else{     
-      Role.updateOne({role : req.body.role.toLowerCase()}, {$pullAll : {links : req.body.links}}).catch(theError => console.log(theError));
+      await Role.updateOne({role : req.body.role.toLowerCase()}, {$pullAll : {links : req.body.links}}).catch(theError => console.log(theError));
     }
-  });
-  Role.findOne({ role: req.body.role.toLowerCase()}).then(ret => res.json(ret));
+  await Role.findOne({ role: req.body.role.toLowerCase()}).then(ret => res.json(ret));
 });
 
 router.post("/modlinks", async (req, res) => {
@@ -172,7 +172,7 @@ router.post("/lou",async (req, res) => {
       return res.status(400).json(errors);
   }
   var returnedRole;
-  returnedRole = await Role.findOne({ role: req.body.role.toLowerCase()})
+  returnedRole = await Role.findOne({ role: req.body.role.toLowerCase()}).catch(theError =>res.status(400).json({role:"You must provide links to rename"}));
   if(!returnedRole){
     return res.status(400).json({role:"Role not found"});
   }
@@ -182,7 +182,8 @@ router.post("/lou",async (req, res) => {
     var i;
     var al=[];
     var ai;
-    for(i = 0; i<role.links.length; i++){
+    var n = role.links.length;
+    for(i = 0; i<n; i++){
       if(role.links[i]){
         if(role.links[i].includes("!")){
           role.links[i]=role.links[i].replace("!","");
@@ -191,8 +192,12 @@ router.post("/lou",async (req, res) => {
         }
       }
     }
-    al=al.concat(ai.links);
+    if(ai){
+      al=al.concat(ai.links);
+    }
     al=al.concat(role.links);
+    console.log(al)
+
     return res.json(al);
   }
     

@@ -109,16 +109,16 @@ class modrole extends Component{
                     <input
                       onChange={this.onChange}
                       value={this.state.rolechange}
-                      error={errors.rolechange}
+                      error={errors.role}
                       id="rolechange"
                       type="text"
                       className={classnames("", {
-                        invalid: errors.rolechange
+                        invalid: errors.role
                       })}
                     />
                     <label htmlFor="rolechange">Role Change</label>
                     <span className="red-text">
-                      {errors.rolechange}
+                      {errors.role}
                     </span>
                   </div>
 

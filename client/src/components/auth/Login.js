@@ -22,7 +22,7 @@ class Login extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.auth.isAuthenticated && localStorage.getItem("role") === "superadmin"){
       this.props.history.push("/sadashboard");
     }

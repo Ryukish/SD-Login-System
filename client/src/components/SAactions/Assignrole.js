@@ -18,7 +18,7 @@ class assignrole extends Component{
     
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.results){
           this.setState({
             results : nextProps.results

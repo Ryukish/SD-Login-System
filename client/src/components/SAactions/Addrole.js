@@ -65,9 +65,16 @@ class addrole extends Component{
         var { results }=this.state;
         var mes1 ="";
         var mes2="";
+        var mes3="";
         if(!isEmpty(results)){
           mes1 = "The new role's name is";
           mes2=" and the links of this role are ";
+          var i;
+          for(i = 0; i<results.links.length; i++){
+            mes3+= "["+results.links[i] + "] ";
+          }
+          mes3 = mes3.replace("[null]","");
+          mes3 = mes3.replace("[]","");
           errors = {};
         };
         return [
@@ -150,7 +157,7 @@ class addrole extends Component{
               </div>,
               <div style={{ marginTop: "15rem", paddingLeft: "45.250px"  }} className="row">
                 <div className = "col s12 offset-s2"><b>
-                    {mes1} {results.role} {mes2} {results.links}                  
+                    {mes1} {results.role} {mes2} {mes3}                  
                   </b>
                 </div>
               </div>

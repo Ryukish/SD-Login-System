@@ -46,11 +46,6 @@ render() {
           this.props.linksOfUser({'role':localStorage.getItem("role")})
         }
 return [
-      <body>
-        <div className="col s12" style={{ paddingLeft: "200.250px" }}>
-        <b>{mes3}</b>
-        </div>
-      </body>,
 <div style={{ height: "75vh", width : "75vh"}}  className="col s12 row">
           <div className="col s12 center-align">
             <h4>
@@ -58,7 +53,7 @@ return [
               <p className="flow-text grey-text text-darken-1">
                 You are logged into admin portal Company XYZ                
               </p>
-
+              {mes3}
             </h4>
           </div>
           <div className="col s6 offset-s3" style={{ paddingLeft: "100.250px" }}>
