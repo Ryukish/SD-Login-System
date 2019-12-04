@@ -6,7 +6,7 @@ const PrivateRouteSA = ({ component: Component, auth, ...rest }) => (
   <Route
     {...rest}
     render={props =>{
-      if (auth.isAuthenticated && localStorage.getItem("role") === "superadmin"){
+      if (auth.isAuthenticated && localStorage.getItem("role") === "SUPERADMIN"){
         return <Component {...props} />;
       }
       else{

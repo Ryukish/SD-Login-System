@@ -6,9 +6,9 @@ const PrivateRoute = ({ component: Component, auth, ...rest }) => (
   <Route
     {...rest}
     render={props =>{
-      if (auth.isAuthenticated && localStorage.getItem("role") !== "superadmin")
+      if (auth.isAuthenticated && localStorage.getItem("role") !== "SUPERADMIN")
         return (<Component {...props}/>) ;
-      else if (auth.isAuthenticated && localStorage.getItem("role") === "superadmin")
+      else if (auth.isAuthenticated && localStorage.getItem("role") === "SUPERADMIN")
         return <Redirect to="/sadashboard" /> ;
       else{
         return <Redirect to="/login" />;

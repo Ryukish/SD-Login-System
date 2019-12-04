@@ -13,7 +13,7 @@ router.post("/assignrole", (req, res) => {
   if (!isValid){
       return res.status(400).json(errors);
   }
-  Role.findOne({ role: req.body.role.toLowerCase()}).then(returnedRole => {
+  Role.findOne({ role: req.body.role.toUpperCase()}).then(returnedRole => {
     if(!returnedRole){
       return res.status(400).json({role:"Role is not created"});
     }
@@ -23,7 +23,7 @@ router.post("/assignrole", (req, res) => {
         return res.status(404).json({email :"Email has not been found"});
     }
     else {
-      returnedUser.role = req.body.role.toLowerCase();
+      returnedUser.role = req.body.role.toUpperCase();
       returnedUser.markModified('role');
       returnedUser.save().then(user => res.json(user)).catch(theError => console.log(theError));
     }
@@ -37,13 +37,13 @@ router.post("/addrole", (req, res) => {
       return res.status(400).json(errors);
   }       
 
-  Role.findOne({ role: req.body.role.toLowerCase()}).then(returnedRole => {
+  Role.findOne({ role: req.body.role.toUpperCase()}).then(returnedRole => {
     if(returnedRole){
       return res.status(400).json({role:"Role is already created"});
     }
     else {
       const newRole = new Role({
-        role: req.body.role.toLowerCase(),
+        role: req.body.role.toUpperCase(),
         links: req.body.links
       });
       newRole.save().then(role => res.json(role)).catch(theError => console.log(theError));
@@ -58,11 +58,14 @@ router.post("/deleterole", (req, res) => {
   if (!isValid){
       return res.status(400).json(errors);
   }
-  if (req.body.role.toLowerCase() === 'basic'){
+  if (req.body.role.toUpperCase() === 'BASIC'){
     return res.status(400).json({role:"You can't delete the Basic Role"})
   }
-  Role.deleteOne({ role: req.body.role.toLowerCase() }).then(role => res.json(role)).catch(theError => console.log(theError));
-  User.updateMany({ role: req.body.role }, { role: "basic"}).then(role => res.json(role)).catch(theError => console.log(theError));
+  if (req.body.role.toUpperCase() === 'SUPERADMIN'){
+    return res.status(400).json({role:"You can't delete the Basic Role"})
+  }
+  Role.deleteOne({ role: req.body.role.toUpperCase() }).then(role => res.json(role)).catch(theError => console.log(theError));
+  User.updateMany({ role: req.body.role }, { role: "BASIC"}).then(role => res.json(role)).catch(theError => console.log(theError));
 });
 
 router.post("/modrole", (req, res) => {
@@ -70,19 +73,22 @@ router.post("/modrole", (req, res) => {
   if (!isValid){
       return res.status(400).json(errors);
   }
-  if (req.body.role.toLowerCase() === 'superadmin'){
+  if (req.body.role.toUpperCase() === 'BASIC'){
+    return res.status(400).json({role:"You can't rename the BASIC Role"})
+  }
+  if (req.body.role.toUpperCase() === 'SUPERADMIN'){
     return res.status(400).json({role:"You can't rename the superadmin Role"})
   }
-  Role.findOne({ role: req.body.rolechange.toLowerCase()}).then(returnedRoleChange => {
+  Role.findOne({ role: req.body.rolechange.toUpperCase()}).then(returnedRoleChange => {
     if(returnedRoleChange){
       return res.status(400).json({role:"Role name already Taken"});
     }
-  Role.findOne({ role: req.body.role.toLowerCase()}).then(returnedRole => {
+  Role.findOne({ role: req.body.role.toUpperCase()}).then(returnedRole => {
     if(!returnedRole){
       return res.status(400).json({role:"Role not found"});
     }
     else{
-      returnedRole.role = req.body.rolechange.toLowerCase();
+      returnedRole.role = req.body.rolechange.toUpperCase();
       returnedRole.markModified('role');
       returnedRole.save().then(role => res.json(role)).catch(theError => console.log(theError));
       }
@@ -99,12 +105,12 @@ router.post("/linksofrole", (req, res) => {
   if (!isValid){
       return res.status(400).json(errors);
   }
-  Role.findOne({ role: req.body.role.toLowerCase()}).then(returnedRole => {
+  Role.findOne({ role: req.body.role.toUpperCase()}).then(returnedRole => {
     if(!returnedRole){
       return res.status(400).json({role:"Role not found"});
     }
     else{
-      Role.findOne({ role: req.body.role.toLowerCase()}).then(role => res.json(role)).catch(theError => console.log(theError));
+      Role.findOne({ role: req.body.role.toUpperCase()}).then(role => res.json(role)).catch(theError => console.log(theError));
     }
   });
 });
@@ -115,14 +121,14 @@ router.post("/addlinks", async (req, res) => {
       return res.status(400).json(errors);
   }     
 
-  returnedRole = await Role.findOne({ role: req.body.role.toLowerCase()})
+  returnedRole = await Role.findOne({ role: req.body.role.toUpperCase()})
     if(!returnedRole){
       return res.status(400).json({role:"Role not found"});
     }
     else{
-      await Role.updateOne({role : req.body.role.toLowerCase()}, {$addToSet: {links : req.body.links}}).catch(theError => console.log(theError));       
+      await Role.updateOne({role : req.body.role.toUpperCase()}, {$addToSet: {links : req.body.links}}).catch(theError => console.log(theError));       
     } 
-  await Role.findOne({ role: req.body.role.toLowerCase()}).then(ret => res.json(ret));
+  await Role.findOne({ role: req.body.role.toUpperCase()}).then(ret => res.json(ret));
 });
 
 router.post("/deletelinks", async (req, res) => {
@@ -130,14 +136,14 @@ router.post("/deletelinks", async (req, res) => {
   if (!isValid){
       return res.status(400).json(errors);
   }
-  returnedRole = await Role.findOne({ role: req.body.role.toLowerCase()})
+  returnedRole = await Role.findOne({ role: req.body.role.toUpperCase()})
     if(!returnedRole){
       return res.status(400).json({role:"Role not found"});
     }
     else{     
-      await Role.updateOne({role : req.body.role.toLowerCase()}, {$pullAll : {links : req.body.links}}).catch(theError => console.log(theError));
+      await Role.updateOne({role : req.body.role.toUpperCase()}, {$pullAll : {links : req.body.links}}).catch(theError => console.log(theError));
     }
-  await Role.findOne({ role: req.body.role.toLowerCase()}).then(ret => res.json(ret));
+  await Role.findOne({ role: req.body.role.toUpperCase()}).then(ret => res.json(ret));
 });
 
 router.post("/modlinks", async (req, res) => {
@@ -145,7 +151,7 @@ router.post("/modlinks", async (req, res) => {
   if (!isValid){
       return res.status(400).json(errors);
   }
-  returnedRole = await Role.findOne({ role: req.body.role.toLowerCase()})
+  returnedRole = await Role.findOne({ role: req.body.role.toUpperCase()})
   if(!returnedRole){
     return res.status(400).json({role:"Role not found"});
     }
@@ -153,14 +159,14 @@ router.post("/modlinks", async (req, res) => {
     if(req.body.linksnew===[]){
     }
     else{
-      await Role.updateOne({role : req.body.role.toLowerCase()}, {$pullAll: {links : req.body.links}});
+      await Role.updateOne({role : req.body.role.toUpperCase()}, {$pullAll: {links : req.body.links}});
     }
     if(req.body.linksnew===[]){
     }
     else{
-      await Role.updateOne({role : req.body.role.toLowerCase()}, {$addToSet: {links : req.body.linksnew}}).catch(theError =>res.status(400).json({role:"You must provide links to rename"}));
+      await Role.updateOne({role : req.body.role.toUpperCase()}, {$addToSet: {links : req.body.linksnew}}).catch(theError =>res.status(400).json({role:"You must provide links to rename"}));
     }
-    var ai = await Role.findOne({ role: req.body.role.toLowerCase()});
+    var ai = await Role.findOne({ role: req.body.role.toUpperCase()});
     return res.json({role : ai.role, links:ai.links});
   }
 });
@@ -172,13 +178,13 @@ router.post("/lou",async (req, res) => {
       return res.status(400).json(errors);
   }
   var returnedRole;
-  returnedRole = await Role.findOne({ role: req.body.role.toLowerCase()}).catch(theError =>res.status(400).json({role:"You must provide links to rename"}));
+  returnedRole = await Role.findOne({ role: req.body.role.toUpperCase()}).catch(theError =>res.status(400).json({role:"You must provide links to rename"}));
   if(!returnedRole){
     return res.status(400).json({role:"Role not found"});
   }
   else{
     var role;
-    role = await Role.findOne({ role: req.body.role.toLowerCase()})
+    role = await Role.findOne({ role: req.body.role.toUpperCase()})
     var i;
     var al=[];
     var ai;
@@ -187,7 +193,7 @@ router.post("/lou",async (req, res) => {
       if(role.links[i]){
         if(role.links[i].includes("!")){
           role.links[i]=role.links[i].replace("!","");
-          ai = await Role.findOne({ role: role.links[i]})
+          ai = await Role.findOne({ role: role.links[i].toUpperCase()})
           role.links[i] ="null";
         }
       }
@@ -196,8 +202,6 @@ router.post("/lou",async (req, res) => {
       al=al.concat(ai.links);
     }
     al=al.concat(role.links);
-    console.log(al)
-
     return res.json(al);
   }
     
