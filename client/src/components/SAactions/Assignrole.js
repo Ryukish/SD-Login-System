@@ -56,7 +56,7 @@ class assignrole extends Component{
         var { results }=this.state;
         var mes1 ="";
         var mes2="";
-        if(!isEmpty(results)){
+        if(results.role){
           mes1 = "The User";
           mes2=" has had their role changed to ";
           errors = {};

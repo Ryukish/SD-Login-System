@@ -66,7 +66,7 @@ class addrole extends Component{
         var mes1 ="";
         var mes2="";
         var mes3="";
-        if(!isEmpty(results)){
+        if(results.links){
           mes1 = "The new role's name is";
           mes2=" and the links of this role are ";
           var i;

@@ -52,7 +52,7 @@ router.post("/addrole", (req, res) => {
   
 });
 
-router.post("/deleterole", (req, res) => {
+router.post("/deleterole", async (req, res) => {
   //give role name delete role
   const { errors, isValid} = validateRole(req.body);
   if (!isValid){
@@ -64,8 +64,8 @@ router.post("/deleterole", (req, res) => {
   if (req.body.role.toUpperCase() === 'SUPERADMIN'){
     return res.status(400).json({role:"You can't delete the Basic Role"})
   }
-  Role.deleteOne({ role: req.body.role.toUpperCase() }).then(role => res.json(role)).catch(theError => console.log(theError));
-  User.updateMany({ role: req.body.role }, { role: "BASIC"}).then(role => res.json(role)).catch(theError => console.log(theError));
+  await Role.deleteOne({ role: req.body.role.toUpperCase() }).then(role => res.json(role)).catch(theError => console.log(theError));
+  await User.updateMany({ role: req.body.role }, { role: "BASIC"}).catch(theError => console.log(theError));
 });
 
 router.post("/modrole", (req, res) => {

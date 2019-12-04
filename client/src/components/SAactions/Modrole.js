@@ -55,7 +55,7 @@ class modrole extends Component{
         var { errors } = this.state;
         var { results }= this.state;
         var {mes1} = "";
-        if (!isEmpty(results)){
+        if (results.role){
           mes1 = "The role's new name is ";
           errors = {};
         }

@@ -71,7 +71,7 @@ class addlink extends Component{
         var mes1="";
         var mes2="";
         var mes3="";
-        if(!isEmpty(results)){
+        if(results.links){
           mes1 = "The role ";
           mes2=" has these links ";
           var i;
