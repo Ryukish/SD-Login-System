@@ -9,7 +9,7 @@ Here are additional details:
 (c) There are five categories of applications and 5 admin roles for each category. Here are the details:
 
 #             Category              Role                   Links                   Access                                                                                                                
-========================================================================================================================================
+==================================================================================================
 1.            Global                   ADMIN                                 All Global links                                                                                   {Manage User Accounts, Assign Roles, Help Desk}
 2.            Finance                FINANCE_ADMIN                             All Global links + All Finance Category links                                            {Finance Reports, Accounts Payable, Accounts Receivables, Tax}
 3.            Sales                      SALES_ADMIN                  All Global links + All Sales Category links                                 {Sales Reports, Sales Leads, Sales Demo}
